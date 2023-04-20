@@ -33,3 +33,6 @@ In another terminal, create a new KubeAutoGpt custom resource:
 ```
 kubectl apply -f test.yaml
 ```
+
+## Limitations
+This PoC operator is meant for fun and experimentation only. It is not production-ready, and should not be deployed to real Kubernetes clusters. The generated specs may not always be accurate or secure, and the operator may not handle all edge cases or errors gracefully.
