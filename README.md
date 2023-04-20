@@ -29,7 +29,7 @@ Start the operator locally:
 ```
 kopf run handler.py --verbose
 ```
-In another terminal, create a new MagicHappens custom resource:
+In another terminal, create a new KubeAutoGpts custom resource:
 ```
 kubectl apply -f test.yaml
 ```
