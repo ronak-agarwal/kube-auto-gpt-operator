@@ -24,7 +24,8 @@ export GPT_MODEL=gpt-3.5-turbo-0301
 ```
 
 ## Usage
-Start the operator locally:
+
+A) Start the operator locally:
 
 ```
 kopf run handler.py --verbose
@@ -34,7 +35,7 @@ In another terminal, create a new KubeAutoGpt custom resource:
 kubectl apply -f test.yaml
 ```
 
-Start on Kube cluster:
+B) Start on Kube cluster:
 
 ```
 docker build -t ronak08/kubeautogpt:v5 .
