@@ -67,8 +67,18 @@ def apply_crd():
             ],
         },
     }
-    kubernetes.config.load_kube_config()
-    api_instance = kubernetes.client.CustomObjectsApi()
+
+    api_instance = None
+    try:
+        kubernetes.config.load_incluster_config()
+        api_instance = kubernetes.client.CustomObjectsApi()
+    except kubernetes.config.ConfigException as e1:
+        try:
+            kubernetes.config.load_kube_config()
+            api_instance = kubernetes.client.CustomObjectsApi()
+        except kubernetes.config.ConfigException as e2:
+            raise Exception(f"Cannot authenticate neither in-cluster, nor via kubeconfig.")
+
     try:
         api_instance.create_cluster_custom_object(
             group="apiextensions.k8s.io",
@@ -454,7 +464,7 @@ def created(spec, status, patch, logger, **_):
                 resp = api.server_side_apply(
                     namespace=namespace,
                     body=object,
-                    field_manager="magic",
+                    field_manager="kube-autogpt",
                 )
                 logger.debug(f"Patch Response: response: {resp}")
 
@@ -517,7 +527,7 @@ def updated(spec, status, logger, patch, **kwargs):
                 resp = api.server_side_apply(
                     namespace=namespace,
                     body=object,
-                    field_manager="magic",
+                    field_manager="kube-autogpt",
                 )
                 logger.debug(f"Patch Response: response: {resp}")
             logger.debug(resp)
@@ -542,7 +552,7 @@ def delete_fn(spec, status, **kwargs):
 
 @kopf.on.login()
 def login_fn(**kwargs):
-    return kopf.login_via_client(**kwargs)
+    return kopf.login_with_service_account(**kwargs) or kopf.login_with_kubeconfig(**kwargs)
 
 
 @kopf.on.startup()
